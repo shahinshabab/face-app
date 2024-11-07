@@ -1,4 +1,4 @@
-name: Deploy Streamlit App to Streamlit Cloud
+name: Deploy Streamlit App
 
 on:
   push:
@@ -6,29 +6,33 @@ on:
       - main
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest  # This is the environment we'll use
+  build:
+    runs-on: ubuntu-latest  # or any environment where you're running your code
 
     steps:
-    - name: Checkout code from GitHub
+    - name: Checkout the code
       uses: actions/checkout@v2
 
-    - name: Set up Python
+    - name: Set up Python 3.x
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'  # Make sure this is compatible with your app
-
-    - name: Install distutils
-      run: |
-        sudo apt-get update
-        sudo apt-get install python3-distutils
+        python-version: '3.8'  # You can change this version based on your app's requirements
 
     - name: Install dependencies
       run: |
+        # Update package list and install CMake
+        sudo apt-get update
+        sudo apt-get install -y cmake
+
+        # Install Python dependencies
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Run tests (optional)
+      run: |
+        pytest  # If you have tests, you can run them here
+
     - name: Deploy to Streamlit Cloud
       run: |
-        # Add any steps for deployment (if needed)
-        echo "Deployment step (if needed)"
+        # Add steps for deployment if necessary, e.g., trigger deployment script or notify Streamlit Cloud
+        echo "Deploying app..."
